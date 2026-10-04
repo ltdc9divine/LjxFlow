@@ -24,7 +24,7 @@ jobs:
       - name: Build Unsigned IPA
         run: |
           cd ios
-          xcodebuild -workspace *.xcworkspace -scheme LjxFlow -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGNING_ALLOWED=NO
+          xcodebuild -workspace *.xcworkspace -scheme LjxFlowRN -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGNING_ALLOWED=NO
           mkdir -p Payload
           mv build/Build/Products/Release-iphoneos/*.app Payload/
           zip -r LjxFlow.ipa Payload
