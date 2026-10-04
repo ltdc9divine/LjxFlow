@@ -1,0 +1,36 @@
+name: Build Unsigned iOS IPA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prebuild iOS
+        run: npx expo prebuild --platform ios
+
+      - name: Build Unsigned IPA
+        run: |
+          cd ios
+          xcodebuild -workspace *.xcworkspace -scheme LjxFlow -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGNING_ALLOWED=NO
+          mkdir -p Payload
+          mv build/Build/Products/Release-iphoneos/*.app Payload/
+          zip -r LjxFlow.ipa Payload
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LjxFlow-iOS-IPA
+          path: ios/LjxFlow.ipa
